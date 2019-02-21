@@ -1,0 +1,9 @@
+1. read_data(input_file): Russell
+	Read the matrix to df from txt (space delimited)
+2. break_to_chunks(df, size_of_chunk): Russell
+	Break into chunks make a list of dataframes
+3. em_algorithm(df_of_genotypes): Cyrillus
+	performs em on the dataframe which includes a chunk
+4. clarks_method(df_of_genotypes): Adam
+	performs clarks method on the dataframe to reduce number of possible haplotypes
+
