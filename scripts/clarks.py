@@ -19,15 +19,6 @@ class Clark:
                 self.known_hap.add(temp_hap) # append the haplotype to the known list
         print(self.known_hap)
 
-    def valid_hap(self, hap):
-        """ Returns True if the haplotype is valid (meaning all entries are just 0's and 1's)"""
-        temp = True
-        for ii in range(len(hap)):
-            if hap[ii] > 1 or hap < 0: # if element is not 0 or 1
-                temp = False
-                break
-        return temp
-
     def is_homogeneous(self, gen):
         """ Returns True if the genotype only consists of 0's and 2's; returns False if any of the positions are heterogeneous. """
         temp = True
