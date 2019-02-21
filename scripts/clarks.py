@@ -17,7 +17,7 @@ class Clark:
             if self.is_homogeneous(self.chunk[n]):
                 temp_hap = self.find_homo_hap(self.chunk[n])
                 self.known_hap.add(temp_hap) # append the haplotype to the known list
-            
+
 
     def complementary_hap(self, haplotype, genotype):
         """ Given a genotype and a haplotype, find the haplotype that complements the one given. """
