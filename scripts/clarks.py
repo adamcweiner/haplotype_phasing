@@ -9,14 +9,15 @@ class Clark:
         self.N = self.chunk.shape[0] # represents the number of genotypes collected (should be 50)
         self.K = self.chunk.shape[1] # represents the length of each genotype collected (should be size_of_chunk)
         self.known_hap = set() # holds our set of known haplotypes
-        
-    def run_clarks(self):
+
+    def run(self):
         """ Calls proper functions to correctly run Clark's algorithm. """
         # add known haplotypes from homogeneous genotypes
         for n in range(self.N):
             if self.is_homogeneous(self.chunk[n]):
                 temp_hap = self.find_homo_hap(self.chunk[n])
                 self.known_hap.add(temp_hap) # append the haplotype to the known list
+        print(self.known_hap)
 
 
     def complementary_hap(self, haplotype, genotype):
@@ -40,7 +41,7 @@ class Clark:
         """ Returns True if the genotype only consists of 0's and 2's; returns False if any of the positions are heterogeneous. """
         temp = True
         for ii in range(len(gen)):
-            if gen[ii] == 1 # if element is 1, break and return False
+            if gen[ii] == 1: # if element is 1, break and return False
                 temp = False
                 break
         return temp
