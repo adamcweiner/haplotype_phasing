@@ -19,15 +19,6 @@ class Clark:
                 self.known_hap.add(temp_hap) # append the haplotype to the known list
         print(self.known_hap)
 
-
-    def complementary_hap(self, haplotype, genotype):
-        """ Given a genotype and a haplotype, find the haplotype that complements the one given. """
-        assert len(haplotype) == len(genotype) # make sure the two arrays are of the same size
-        comp_hap = np.zeros((len(haplotype))) # fill comp_hap with just zeros to start
-        for ii in range(len(comp_hap)):
-            comp_hap[ii] = genotype[ii] - haplotype[ii] # i.e. if g[ii] = 2 and h[ii] = 1 then c_h[ii] = 1
-        return comp_hap
-
     def valid_hap(self, hap):
         """ Returns True if the haplotype is valid (meaning all entries are just 0's and 1's)"""
         temp = True
