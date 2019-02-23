@@ -36,23 +36,22 @@ class Clark:
             
         print(self.known_hap)
 
-
-    def find_homo_hap(self, gen_seq):
-        """ Gives the haplotype of a homogenous genotype. All g[i]=2's turn into h[i]=1's and all g[i]=0's turn into h[i]=0's. """
-        hap_seq = np.zeros((len(gen_seq))) # start with an array of 0's
-        for ii in range(len(gen_seq)):
-            assert gen_seq[ii] == 0 or gen_seq[ii] == 2 # make sure it's a 0 or 2
-            if gen_seq[ii] == 2:
-                hap_seq[ii] = 1
-        return hap_seq
         
 
     # need to create a function that checks if a haplotype sequence is unique compared to all that is found in self.known_hap
     def unique_haplo(self, hap_seq):
         """ Looks through all of self.known_hap and ensures that hap_seq is unique from all of the known haplotypes currently in the list. If the sequence already exists, it will return the address of the existing node. If the sequence is unique, it will return None. """
         temp = None
-        for hap_node in self.known_hap:
-            if np.array_equal(hap_node.seq, hap_seq): # returns true if two arrays are equal
+        for hap_array in self.known_hap:
+            if np.array_equal(hap_array, hap_seq): # returns true if two arrays are equal
                 temp = hap_node # assign temp to current node and break out
                 break
         return temp
+
+    def add_hs(self, hap_seq, gen_seq):
+        """ Adds the given haplotype and assigns the other haplotype haplotype assigned to the genotype. Note that h1 is a Hap object. """
+        # TODO: convert to array format
+        self.h1 = h1
+        h2_seq = self.complementary_hap(h1.seq) # find sequence of second haplotype by finding complement
+        self.h2 = Hap(h2_seq) # create Hap object given the proper sequence
+        return self.h2 # return the complementary node in case it needs to be used
