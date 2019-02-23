@@ -15,5 +15,5 @@ chunks = break_to_chunks(matrix, 10) #breaks into chunks including overlapping c
 
 # start playing with Clark's algorithm by passing in the first chunk in the list of chunks
 c = Clark(chunks[0])
-c.run()
+#c.run()
 

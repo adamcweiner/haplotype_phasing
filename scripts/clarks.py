@@ -1,18 +1,19 @@
 """ Implement Clark's algorithm on a chunk to eliminate some of the haplotypes. """
 import numpy as np
-from nodes import Gen, Hap
+from utils import complementary_hap, num_het, find_homo_hap, valid_hap
 
 class Clark:
     """ Holds all functions relevant to Clark's algorithm. """
     def __init__(self, chunk):
         """ A single genotype `chunk` is passed into the class from the `chunks` list. If the chunks are of size 10 then each `chunk` is an array of shape (10, 50). """
-        self.chunk = chunk.T # transpose this to make chunk of shape (50, 10)... this becomes easier to index
-        self.N = self.chunk.shape[0] # represents the number of genotypes collected (should be 50)
-        self.K = self.chunk.shape[1] # represents the length of each genotype collected (should be size_of_chunk)
-        self.g_nodes = [] # list of all our genotype nodes
+        chunk = chunk.T # transpose this to make chunk of shape (50, 10)... this becomes easier to index
+        self.N = chunk.shape[0] # represents the number of genotypes collected (should be 50)
+        self.K = chunk.shape[1] # represents the length of each genotype collected (should be size_of_chunk)
+        self.chunk = np.zeros((3, self.N, self.K)) # 1st dim represents whether sequence is genotype (0), hap1 (1) or hap2 (2)
         for n in range(self.N):
-            self.g_nodes.append(Gen(self.chunk[n])) # create a Gen object with the proper sequence and append it to the list
-        self.known_hap = [] # holds our list of known haplotype nodes
+            self.chunk[0, n] = chunk[n] # assign genotype sequence
+        print(self.chunk)
+        self.known_hap = [] # holds our list of known haplotype arrays
 
     def run(self):
         """ Calls proper functions to correctly run Clark's algorithm. """
