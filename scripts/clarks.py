@@ -39,8 +39,21 @@ class Clark:
 
 
         # go through list again and see if any of the known haplotypes can be used for unphased genotypes
-        #for n in range(self.N):
-            
+        for n in range(self.N):
+            print("n: " + str(n))
+            if self.chunk[1, n, 0] is None: # only search if the haplotypes are still unknown
+                for hap_array in self.known_hap:
+                    comp = complementary_hap(hap_array, self.chunk[0, n]) # find the complementary haplotype
+                    # if the complementary haplotype is valid then use these two haplotypes         
+                    if valid_hap(comp):
+                        self.chunk[1, n] = hap_array # assign known haplotype
+                        self.chunk[2, n] = comp # assign its complement
+                        if self.unique_haplo(comp): # put the complement in the known list if it's unique
+                            self.known_hap.append(comp)
+                        print("phasing a genotype with known_hap")
+                        num_phased += 1
+                        break # stop looking through known_hap for this given genotype
+
         print(self.known_hap)
         print("num_phased: " + str(num_phased))
         
@@ -54,11 +67,3 @@ class Clark:
                 temp = False # assign temp to current node and break out
                 break
         return temp
-
-    def add_h2(self, chunk_slice):
-        """ Given a slice with the genotype (0) and hap1 (1) known, fill in the second haplotype into the chunk...Adds the given haplotype and assigns the other haplotype haplotype assigned to the genotype. Note that h1 is a Hap object. """
-        # TODO: maybe delete this function
-        self.h1 = h1
-        h2_seq = self.complementary_hap(h1.seq) # find sequence of second haplotype by finding complement
-        self.h2 = Hap(h2_seq) # create Hap object given the proper sequence
-        return self.h2 # return the complementary node in case it needs to be used
