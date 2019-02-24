@@ -33,3 +33,17 @@ def valid_hap(hap_seq):
             temp = False
             break
     return temp
+
+def find_one_het(gen_seq):
+    """ Find the two haplotypes that correspond to a genotype of 1 heterozygous position. """
+    assert num_het(gen_seq) == 1
+    K = len(gen_seq)
+    hap1 = np.zeros((K))
+    hap2 = hap1.copy()
+    for ii in range(K):
+        if gen_seq[ii] == 2: # both haplotypes are 1
+            hap1[ii], hap2[ii] = 1, 1
+        if gen_seq[ii] == 1: # one haplotype is 1 and the other is 0
+            hap1[ii] = 1
+    return hap1, hap2
+        
