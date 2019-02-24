@@ -40,7 +40,6 @@ class Clark:
 
         # go through list again and see if any of the known haplotypes can be used for unphased genotypes
         for n in range(self.N):
-            print("n: " + str(n))
             if self.chunk[1, n, 0] is None: # only search if the haplotypes are still unknown
                 for hap_array in self.known_hap:
                     comp = complementary_hap(hap_array, self.chunk[0, n]) # find the complementary haplotype
@@ -50,12 +49,11 @@ class Clark:
                         self.chunk[2, n] = comp # assign its complement
                         if self.unique_haplo(comp): # put the complement in the known list if it's unique
                             self.known_hap.append(comp)
-                        print("phasing a genotype with known_hap")
                         num_phased += 1
                         break # stop looking through known_hap for this given genotype
 
-        print(self.known_hap)
-        print("num_phased: " + str(num_phased))
+        # Return the two haplotype chunks and the number of genotypes that are fully phased. Transpose the output in order to match input chunk shape to ouptut chunk shape.
+        return self.chunk[1].T, self.chunk[2].T, num_phased
         
 
     # need to create a function that checks if a haplotype sequence is unique compared to all that is found in self.known_hap
