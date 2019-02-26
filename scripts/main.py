@@ -11,8 +11,9 @@ if len(sys.argv) != 2:
 input_file = sys.argv[1]
 
 matrix = read_data(input_file) #reads data into numpy array (matrix)
-test = min_chunk_size(matrix, 0)
-print(test)
+end_pos, next_chunk_start_pos = min_chunk_size(matrix, 0)
+print("end_pos: ", end_pos)
+print("next_chunk_start_pos: ", next_chunk_start_pos)
 '''
 chunks = break_to_chunks(matrix, 10) #breaks into chunks including overlapping chunks
 
