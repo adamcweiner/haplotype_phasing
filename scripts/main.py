@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 from read_data import read_data
-from break_to_chunks import break_to_chunks
+from break_to_chunks import min_chunk_size
 from clarks import Clark
 
 #makes sure there is a command line argument
@@ -11,6 +11,9 @@ if len(sys.argv) != 2:
 input_file = sys.argv[1]
 
 matrix = read_data(input_file) #reads data into numpy array (matrix)
+test = min_chunk_size(matrix, 0)
+print(test)
+'''
 chunks = break_to_chunks(matrix, 10) #breaks into chunks including overlapping chunks
 
 full_hap1 = np.full((matrix.shape), None)
@@ -31,4 +34,4 @@ for bit in chunks:
 
 print("finished: " + str(finished_chunks))
 print("unfinished: " + str(unfinished_chunks))
-
+'''
