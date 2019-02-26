@@ -9,7 +9,7 @@ import numpy as np
 
 	return chunk_list
 '''
-def min_chunk_size(df, start_pos):
+def min_chunk_size(df, start_pos, num_call=0):
     """ For a given df and start position, return the position at which this current chunk should end and the position at which the next chunk should begin. The current chunk should end when all 50 individuals have encountered at least one `1` in the genotype. The next chunk should begin at the lowest position (numerically) where the last `1` was seen (across all individuals). """
     row_count = 0
     n_snp, m_ind = df.shape
@@ -23,9 +23,10 @@ def min_chunk_size(df, start_pos):
         row_count += 1 # iterate the row count at end
     end_pos = start_pos + row_count
     print(last_het)
-    next_chunk_start_pos = np.min(last_het) # the next chunk needs to start at this position in order to guarantee at least one `1` in the overlap for all individuals
-    it = 1
-    while next_chunk_start_pos == start_pos:
-        end_pos, next_chunk_start_pos = min_chunk_size(df, start_pos+it) # recursively call this function there is separation between this start_pos and the next one
-        it += 1
+    next_chunk_start_pos = np.min(last_het) + num_call # the next chunk needs to start at this position in order to guarantee at least one `1` in the overlap for all individuals. Shift up by num_call to account for recursive calls
+    orig_start_pos = start_pos - num_call # want to compare the loop to the original start position instead of local one
+    print("num_call: ", num_call)
+    print("orig_start_pos: ", orig_start_pos)
+    if next_chunk_start_pos == orig_start_pos:
+        end_pos, next_chunk_start_pos = min_chunk_size(df, start_pos+1, num_call=num_call+1) # recursively call this function there is separation between the original start_pos and the start position of the next chunk
     return end_pos, next_chunk_start_pos
