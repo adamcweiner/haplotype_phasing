@@ -11,7 +11,12 @@ if len(sys.argv) != 2:
 input_file = sys.argv[1]
 
 matrix = read_data(input_file) #reads data into numpy array (matrix)
-end_pos, next_chunk_start_pos = min_chunk_size(matrix, 0)
+end_pos = []
+next_chunk_start_pos = []
+for ii in range(1,10): # example of just 10 chunks
+    temp1, temp2 = min_chunk_size(matrix, next_chunk_start_pos[ii-1])
+    end_pos.append(temp1)
+    next_chunk_start_pos.append(temp2)
 print("end_pos: ", end_pos)
 print("next_chunk_start_pos: ", next_chunk_start_pos)
 '''
