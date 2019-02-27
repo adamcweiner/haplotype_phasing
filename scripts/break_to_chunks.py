@@ -35,9 +35,10 @@ def smart_chunking(df):
         chunk_help(ii)
         ii += 1
 
-    print(len(chunk_list))
-    print(np.mean(chunk_size))
-    print(np.std(chunk_size))
+    #print(len(chunk_list))
+    #print(np.mean(chunk_size))
+    #print(np.std(chunk_size))
+    start_pos.pop() # get rid of the last item on the list since it's never truly found
 
     return chunk_list, start_pos, end_pos
 
