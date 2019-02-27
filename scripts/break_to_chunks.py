@@ -1,14 +1,14 @@
 """ Set of functions that convert the large df of genotypes into chunks of genotypes that can be phased individually and then annealed together. """
 import numpy as np
 
-'''def break_to_chunks(df, size_of_chunk):
+def break_to_chunks(df, size_of_chunk):
     number_of_SNPS = len(df)
     chunk_list = list()
     for i in range(0,number_of_SNPS, size_of_chunk//2):
         chunk_list.append(df[i:i+size_of_chunk])
 
-	return chunk_list
-'''
+    return chunk_list
+
 def smart_chunking(df):
     """ Uses find_chunk_size to break the dataframe into chunks of various sizes. """
     n_snp, m_ind = df.shape
@@ -35,9 +35,6 @@ def smart_chunking(df):
         chunk_help(ii)
         ii += 1
 
-    #print(len(chunk_list))
-    #print(np.mean(chunk_size))
-    #print(np.std(chunk_size))
     start_pos.pop() # get rid of the last item on the list since it's never truly found
 
     return chunk_list, start_pos, end_pos
