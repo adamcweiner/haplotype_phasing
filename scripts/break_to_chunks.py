@@ -16,18 +16,26 @@ def smart_chunking(df):
     end_pos = []
     start_pos = [0] # want to start at the 0th SNP for the first iteration
     chunk_list = [] # output list of the chunks
-    ii = 0 # index for moving through next_chunk_start_pos
-    while end_pos[ii] < n_snp or len(end_pos)==0: # length check is just to protect against first entry into loop
-        temp_start = start_pos[ii]
-        temp_end, temp_next_start = find_chunk_size(matrix, temp_start)
+
+    def chunk_help(it):
+        """ Finds chunk positions and appends appropriate values/chunks to lists """
+        temp_start = start_pos[it]
+        temp_end, temp_next_start = find_chunk_size(df, temp_start)
         end_pos.append(temp_end) # position for end of current chunk
         start_pos.append(temp_next_start) # position for start of next chunk
         chunk_list.append(df[temp_start:temp_end])
+
+    chunk_help(0) # do first pass outside of loop since end_pos is empty
+    ii = 1 # index for moving through next_chunk_start_pos
+
+    # iterate until the end_pos reaches the end of the genome
+    while end_pos[ii-1] < n_snp:
+        chunk_help(ii)
         ii += 1
-     
+
     # TODO: handle edge cases for end of genome
      
-    return chunk_list, next_chunk_start_pos
+    return chunk_list, start_pos, end_pos
     
 
 def find_chunk_size(df, start_pos, num_call=0):

@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 from read_data import read_data
-from break_to_chunks import find_chunk_size
+from break_to_chunks import smart_chunking
 from clarks import Clark
 
 #makes sure there is a command line argument
@@ -11,16 +11,10 @@ if len(sys.argv) != 2:
 input_file = sys.argv[1]
 
 matrix = read_data(input_file) #reads data into numpy array (matrix)
-end_pos = []
-next_chunk_start_pos = [0]
+chunk_list, start_pos, end_pos = smart_chunking(matrix)
+print(chunk_list)
 
 
-for ii in range(1,10): # example of just 10 chunks
-    temp1, temp2 = find_chunk_size(matrix, next_chunk_start_pos[ii-1])
-    end_pos.append(temp1)
-    next_chunk_start_pos.append(temp2)
-print("end_pos: ", end_pos)
-print("next_chunk_start_pos: ", next_chunk_start_pos)
 '''
 chunks = break_to_chunks(matrix, 10) #breaks into chunks including overlapping chunks
 
