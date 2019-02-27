@@ -12,7 +12,6 @@ input_file = sys.argv[1]
 
 matrix = read_data(input_file) #reads data into numpy array (matrix)
 chunk_list, start_pos, end_pos = smart_chunking(matrix)
-print(chunk_list)
 
 
 '''
