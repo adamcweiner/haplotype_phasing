@@ -9,7 +9,28 @@ import numpy as np
 
 	return chunk_list
 '''
-def min_chunk_size(df, start_pos, num_call=0):
+def smart_chunking(df):
+    """ Uses find_chunk_size to break the dataframe into chunks of various sizes. """
+    n_snp, m_ind = df.shape
+
+    end_pos = []
+    start_pos = [0] # want to start at the 0th SNP for the first iteration
+    chunk_list = [] # output list of the chunks
+    ii = 0 # index for moving through next_chunk_start_pos
+    while end_pos[ii] < n_snp or len(end_pos)==0: # length check is just to protect against first entry into loop
+        temp_start = start_pos[ii]
+        temp_end, temp_next_start = find_chunk_size(matrix, temp_start)
+        end_pos.append(temp_end) # position for end of current chunk
+        start_pos.append(temp_next_start) # position for start of next chunk
+        chunk_list.append(df[temp_start:temp_end])
+        ii += 1
+     
+    # TODO: handle edge cases for end of genome
+     
+    return chunk_list, next_chunk_start_pos
+    
+
+def find_chunk_size(df, start_pos, num_call=0):
     """ For a given df and start position, return the position at which this current chunk should end and the position at which the next chunk should begin. The current chunk should end when all 50 individuals have encountered at least one `1` in the genotype. The next chunk should begin at the lowest position (numerically) where the last `1` was seen (across all individuals). """
     row_count = 0
     n_snp, m_ind = df.shape
@@ -28,5 +49,5 @@ def min_chunk_size(df, start_pos, num_call=0):
     #print("num_call: ", num_call)
     #print("orig_start_pos: ", orig_start_pos)
     if next_chunk_start_pos == orig_start_pos:
-        end_pos, next_chunk_start_pos = min_chunk_size(df, start_pos+1, num_call=num_call+1) # recursively call this function there is separation between the original start_pos and the start position of the next chunk
+        end_pos, next_chunk_start_pos = find_chunk_size(df, start_pos+1, num_call=num_call+1) # recursively call this function there is separation between the original start_pos and the start position of the next chunk
     return int(end_pos), int(next_chunk_start_pos)

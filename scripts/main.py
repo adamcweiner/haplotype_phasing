@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 from read_data import read_data
-from break_to_chunks import min_chunk_size
+from break_to_chunks import find_chunk_size
 from clarks import Clark
 
 #makes sure there is a command line argument
@@ -16,7 +16,7 @@ next_chunk_start_pos = [0]
 
 
 for ii in range(1,10): # example of just 10 chunks
-    temp1, temp2 = min_chunk_size(matrix, next_chunk_start_pos[ii-1])
+    temp1, temp2 = find_chunk_size(matrix, next_chunk_start_pos[ii-1])
     end_pos.append(temp1)
     next_chunk_start_pos.append(temp2)
 print("end_pos: ", end_pos)
