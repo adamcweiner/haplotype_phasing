@@ -16,7 +16,6 @@ def smart_chunking(df):
     end_pos = []
     start_pos = [0] # want to start at the 0th SNP for the first iteration
     chunk_list = [] # output list of the chunks
-    chunk_size = [] # the size of each chunk
 
     def chunk_help(it):
         """ Finds chunk positions and appends appropriate values/chunks to lists """
@@ -24,7 +23,6 @@ def smart_chunking(df):
         temp_end, temp_next_start = find_chunk_size(df, temp_start)
         end_pos.append(temp_end) # position for end of current chunk
         start_pos.append(temp_next_start) # position for start of next chunk
-        chunk_size.append(temp_end - temp_start)
         chunk_list.append(df[temp_start:temp_end])
 
     chunk_help(0) # do first pass outside of loop since end_pos is empty
