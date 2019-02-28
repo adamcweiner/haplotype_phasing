@@ -38,19 +38,23 @@ class Clark:
                 num_phased += 1
 
 
-        # go through list again and see if any of the known haplotypes can be used for unphased genotypes
-        for n in range(self.N):
-            if self.chunk[1, n, 0] is None: # only search if the haplotypes are still unknown
-                for hap_array in self.known_hap:
-                    comp = complementary_hap(hap_array, self.chunk[0, n]) # find the complementary haplotype
-                    # if the complementary haplotype is valid then use these two haplotypes         
-                    if valid_hap(comp):
-                        self.chunk[1, n] = hap_array # assign known haplotype
-                        self.chunk[2, n] = comp # assign its complement
-                        if self.unique_haplo(comp): # put the complement in the known list if it's unique
-                            self.known_hap.append(comp)
-                        num_phased += 1
-                        break # stop looking through known_hap for this given genotype
+        # go through list repeatedly and see if any of the known haplotypes can be used for unphased genotypes
+        enter = True
+        while enter is True:
+            enter = False # break out of while loop unless we phase a genotype
+            for n in range(self.N):
+                if self.chunk[1, n, 0] is None: # only search if the haplotypes are still unknown
+                    for hap_array in self.known_hap:
+                        comp = complementary_hap(hap_array, self.chunk[0, n]) # find the complementary haplotype
+                        # if the complementary haplotype is valid then use these two haplotypes         
+                        if valid_hap(comp):
+                            self.chunk[1, n] = hap_array # assign known haplotype
+                            self.chunk[2, n] = comp # assign its complement
+                            if self.unique_haplo(comp): # put the complement in the known list if it's unique
+                                self.known_hap.append(comp)
+                            num_phased += 1
+                            enter = True # enter the while loop again since we phased a genotype
+                            break # stop looking through known_hap for this given genotype
 
         # Return the two haplotype chunks and the number of genotypes that are fully phased. Transpose the output in order to match input chunk shape to ouptut chunk shape.
         return self.chunk[1].T, self.chunk[2].T, num_phased
