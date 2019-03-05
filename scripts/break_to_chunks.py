@@ -20,13 +20,10 @@ def smart_chunking(df, max_snps=-1):
     def chunk_help(it):
         """ Finds chunk positions and appends appropriate values/chunks to lists """
         temp_start = start_pos[it]
-        #print("temp_start:", temp_start)
         if max_snps < 0:
             temp_end, temp_next_start = find_ideal_chunk_size(df, temp_start)
         else:
             temp_end, temp_next_start = find_short_chunk_size(df, temp_start, max_snps=max_snps)
-        #print("temp_end:", temp_end)
-        #print("temp_next_start:", temp_next_start)
         end_pos.append(temp_end) # position for end of current chunk
         start_pos.append(temp_next_start) # position for start of next chunk
         chunk_list.append(df[temp_start:temp_end])
