@@ -20,9 +20,9 @@ def smart_chunking(df, max_snps=10):
     def chunk_help(it):
         """ Finds chunk positions and appends appropriate values/chunks to lists """
         temp_start = start_pos[it]
+        print("*** start find_chunk_size ***")
         temp_end, temp_next_start = find_chunk_size(df, temp_start, max_snps=max_snps)
-        print("temp_start:", temp_start)
-        print("temp_end:", temp_end)
+        print("*** end find_chunk_size ***")
         end_pos.append(temp_end) # position for end of current chunk
         start_pos.append(temp_next_start) # position for start of next chunk
         chunk_list.append(df[temp_start:temp_end])
@@ -43,6 +43,7 @@ def smart_chunking(df, max_snps=10):
 
 def find_chunk_size(df, start_pos, num_call=0, max_snps=10):
     """ For a given df and start position, return the position at which this current chunk should end and the position at which the next chunk should begin. The current chunk should end when all 50 individuals have encountered at least one `1` in the genotype. The next chunk should begin at the lowest position (numerically) where the last `1` was seen (across all individuals). """
+    print("num_call:", num_call)
     row_count = 0
     n_snp, m_ind = df.shape
     seen_het = np.full((m_ind), False) # True if said individual has encountered a 1, False if it hasn't encountered a 1
@@ -52,6 +53,7 @@ def find_chunk_size(df, start_pos, num_call=0, max_snps=10):
         if start_pos + row_count == n_snp: # break out of while-loop if we reached the end of the genome
             break
         elif np.max(num_ones) >= max_snps: # break out of while-loop if any of the individuals reach the upper bound on SNPs
+            print("reached max SNP count for this chunk")
             break
         else:
             for ii in range(m_ind):
@@ -66,4 +68,6 @@ def find_chunk_size(df, start_pos, num_call=0, max_snps=10):
     # recursively call this function until there is separation between the original start_pos and the start position of the next chunk
     if next_chunk_start_pos == orig_start_pos:
         end_pos, next_chunk_start_pos = find_chunk_size(df, start_pos+1, num_call=num_call+1)
+    print("end_pos:", end_pos)
+    print("next_chunk_start_pos:", next_chunk_start_pos)
     return int(end_pos), int(next_chunk_start_pos)
