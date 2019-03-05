@@ -9,7 +9,7 @@ class Clark:
         chunk = chunk.T # transpose this to make chunk of shape (50, 10)... this becomes easier to index
         self.N = chunk.shape[0] # represents the number of genotypes collected (should be 50)
         self.K = chunk.shape[1] # represents the length of each genotype collected (should be size_of_chunk)
-        self.chunk = np.full((3, self.N, self.K), None) # 1st dim represents whether sequence is genotype (0), hap1 (1) or hap2 (2)
+        self.chunk = np.full((3, self.N, self.K), -1, dtype=int) # 1st dim represents whether sequence is genotype (0), hap1 (1) or hap2 (2)
         for n in range(self.N):
             self.chunk[0, n] = chunk[n] # assign genotype sequence
         self.known_hap = [] # holds our list of known haplotype arrays
@@ -43,7 +43,7 @@ class Clark:
         while enter is True:
             enter = False # break out of while loop unless we phase a genotype
             for n in range(self.N):
-                if self.chunk[1, n, 0] is None: # only search if the haplotypes are still unknown
+                if self.chunk[1, n, 0] == -1: # only search if the haplotypes are still unknown
                     for hap_array in self.known_hap:
                         comp = complementary_hap(hap_array, self.chunk[0, n]) # find the complementary haplotype
                         # if the complementary haplotype is valid then use these two haplotypes         
@@ -56,8 +56,12 @@ class Clark:
                             enter = True # enter the while loop again since we phased a genotype
                             break # stop looking through known_hap for this given genotype
 
+        hap_out = np.full((self.K, 2*self.N), -1, dtype=int)
+        for ii in range(self.N):
+            hap_out[:, 2*ii] = self.chunk[1, ii]
+            hap_out[:, 2*ii+1] = self.chunk[2, ii]
         # Return the two haplotype chunks and the number of genotypes that are fully phased. Transpose the output in order to match input chunk shape to ouptut chunk shape.
-        return self.chunk[1].T, self.chunk[2].T, num_phased
+        return hap_out, num_phased
         
 
     # need to create a function that checks if a haplotype sequence is unique compared to all that is found in self.known_hap
