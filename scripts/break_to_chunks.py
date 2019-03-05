@@ -9,7 +9,7 @@ def break_to_chunks(df, size_of_chunk):
 
     return chunk_list
 
-def smart_chunking(df):
+def smart_chunking(df, max_snps=10):
     """ Uses find_chunk_size to break the dataframe into chunks of various sizes. """
     n_snp, m_ind = df.shape
 
@@ -20,7 +20,7 @@ def smart_chunking(df):
     def chunk_help(it):
         """ Finds chunk positions and appends appropriate values/chunks to lists """
         temp_start = start_pos[it]
-        temp_end, temp_next_start = find_chunk_size(df, temp_start)
+        temp_end, temp_next_start = find_chunk_size(df, temp_start, max_snps=max_snps)
         end_pos.append(temp_end) # position for end of current chunk
         start_pos.append(temp_next_start) # position for start of next chunk
         chunk_list.append(df[temp_start:temp_end])
@@ -32,26 +32,31 @@ def smart_chunking(df):
     while end_pos[ii-1] < n_snp:
         chunk_help(ii)
         ii += 1
+        print(len(chunk_list))
 
     start_pos.pop() # get rid of the last item on the list since it's never truly found
 
     return chunk_list, start_pos, end_pos
 
 
-def find_chunk_size(df, start_pos, num_call=0):
+def find_chunk_size(df, start_pos, num_call=0, max_snps=10):
     """ For a given df and start position, return the position at which this current chunk should end and the position at which the next chunk should begin. The current chunk should end when all 50 individuals have encountered at least one `1` in the genotype. The next chunk should begin at the lowest position (numerically) where the last `1` was seen (across all individuals). """
     row_count = 0
     n_snp, m_ind = df.shape
     seen_het = np.full((m_ind), False) # True if said individual has encountered a 1, False if it hasn't encountered a 1
     last_het = np.zeros((m_ind)) # stores the last heterozygous position seen for each individual in this chunk
+    num_ones = np.zeros((m_ind)) # stores the number of 1's seen in the chunk
     while np.all(seen_het) == False: # until every position is True
         if start_pos + row_count == n_snp: # break out of while-loop if we reached the end of the genome
+            break
+        elif np.max(num_ones) >= max_snps: # break out of while-loop if any of the individuals reach the upper bound on SNPs
             break
         else:
             for ii in range(m_ind):
                 if df[start_pos + row_count, ii] == 1: # if a 1 is encountered
                     seen_het[ii] = True # assign position to True
                     last_het[ii] = start_pos + row_count # the 1 was seen in this row
+                    num_ones[ii] += 1 # add 1 to the total number of ones for this individual
             row_count += 1 # iterate the row count at end
     end_pos = start_pos + row_count
     next_chunk_start_pos = np.min(last_het) + num_call # the next chunk needs to start at this position in order to guarantee at least one `1` in the overlap for all individuals. Shift up by num_call to account for recursive calls
