@@ -13,7 +13,7 @@ def generate_random():
 		chunk = []
 		for j in range(20):
 			row = []
-			for i in range(10):
+			for i in range(100):
 				row.append(random.randint(0,1))
 			chunk.append(row)
 			position += 1
@@ -29,12 +29,11 @@ def generate_random():
 		
 #function merge_chunks(haplotype_chunks)
 #input:
-#	haplotype_chunks: list of the nx2m matrices
+#	haplotype_chunks: list of the nx2m matrices, start positions, end positions
 #output:
-#	haplotypes: one nx2m matrix where n is the number of total snps
+#	haplotypes: one 2mxn matrix where n is the number of total snps
 def merge_chunks(data, start, end):
-	print(data[0])
-	print(data[1])
+	
 	people = []
 	for i in range(len(data[0][0])):
 		person = [item[i] for item in data[0]]
