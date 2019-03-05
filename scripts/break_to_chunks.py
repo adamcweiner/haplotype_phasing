@@ -49,11 +49,13 @@ def find_chunk_size(df, start_pos, num_call=0, max_snps=10):
     seen_het = np.full((m_ind), False) # True if said individual has encountered a 1, False if it hasn't encountered a 1
     last_het = np.zeros((m_ind)) # stores the last heterozygous position seen for each individual in this chunk
     num_ones = np.zeros((m_ind)) # stores the number of 1's seen in the chunk
+    hit_max = False # a boolean switch to determine how next_chunk_start_pos is calculated
     while np.all(seen_het) == False: # until every position is True
         if start_pos + row_count == n_snp: # break out of while-loop if we reached the end of the genome
             break
         elif np.max(num_ones) >= max_snps: # break out of while-loop if any of the individuals reach the upper bound on SNPs
             print("reached max SNP count for this chunk")
+            hit_max = True # we reached the maximal number of SNPs so we won't be able to find an overlapping 1 for all individuals
             break
         else:
             for ii in range(m_ind):
@@ -65,6 +67,8 @@ def find_chunk_size(df, start_pos, num_call=0, max_snps=10):
     end_pos = start_pos + row_count
     next_chunk_start_pos = np.min(last_het) + num_call # the next chunk needs to start at this position in order to guarantee at least one `1` in the overlap for all individuals. Shift up by num_call to account for recursive calls
     orig_start_pos = start_pos - num_call # want to compare the loop to the original start position instead of local one
+    if hit_max:
+        next_chunk_start_pos = orig_start_pos + 3 # blindly shift up by 3... TODO: tune this number
     # recursively call this function until there is separation between the original start_pos and the start position of the next chunk
     if next_chunk_start_pos == orig_start_pos:
         end_pos, next_chunk_start_pos = find_chunk_size(df, start_pos+1, num_call=num_call+1)
