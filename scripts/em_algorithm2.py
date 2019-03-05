@@ -90,6 +90,6 @@ def em_algorithm2(data):
 	for ind in range(m_ind):
 		pos = np.argmax(indprob[ind])
 		chrom1 = pool[indptr[ind][pos][0]]
-		chrom2 = pool[indptr[ind][pos][1]]
+		chrom2 = pool[indptr[ind][pos][0]] if len(indptr[ind][pos])<2 else pool[indptr[ind][pos][1]]
 		res.append(np.vstack((chrom1.copy(), chrom2.copy())).T)		
 	return np.hstack(res)
