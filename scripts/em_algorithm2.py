@@ -89,27 +89,7 @@ def em_algorithm2(data):
 	res = []
 	for ind in range(m_ind):
 		pos = np.argmax(indprob[ind])
-		ind_geno1 = data[:,ind*2]
-		ind_geno2 = data[:,ind*2+1]
-		unphased_spot = unphased[:,ind]
-		no_nequal_spot = np.sum(nequal[:,ind]) <= 0
-		n_ones = unphased_spot.sum()
-		if no_nequal_spot:
-			n_sol = 1 if n_ones<=1 else 2**(n_ones-1)
-		else:
-			n_sol = 1 if n_ones<=0 else 2**n_ones
-		indprob.append([1/n_sol] * n_sol)
-		indptr.append([[] for _ in range(n_sol)])
-		seq1 = np.array([1 if i >= 1 else 0 for i in ind_geno1])
-		seq2 = np.array([1 if i >= 1 else 0 for i in ind_geno2])
-		lst = list(product([0,1], repeat=n_ones-1 if no_nequal_spot else n_ones))
-		if no_nequal_spot:
-			comb_lst = np.array([0] + list(lst[pos]))
-			compl_lst = [1]*n_ones-comb_lst
-		else:
-			comb_lst = np.array(list(lst[pos]))
-			compl_lst = [1]*n_ones-comb_lst
-		seq1[unphased_spot] = comb_lst
-		seq2[unphased_spot] = compl_lst
-		res.append(np.vstack((seq1.copy(), seq2.copy())).T)
+		chrom1 = pool[indptr[ind][pos][0]]
+		chrom2 = pool[indptr[ind][pos][1]]
+		res.append(np.vstack((chrom1.copy(), chrom2.copy())).T)		
 	return np.hstack(res)
