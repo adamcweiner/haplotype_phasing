@@ -67,5 +67,5 @@ def merge_chunks(data, start, end):
 	return people
 
 
-data, start, end = generate_random()
-merge_chunks(data,start,end)
+#data, start, end = generate_random()
+#merge_chunks(data,start,end)
