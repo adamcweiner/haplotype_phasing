@@ -30,13 +30,9 @@ def generate_random():
 		
 
 def count_match(lst1, lst2):
-	count = 0
 	length = len(lst1)
-
-	for i in range(length):
-		if(lst1[i]==lst2[i]):
-			count+=1
-
+	
+	count = sum(1 for i in range(length) if lst1[i] == lst2[i])
 	return count
 
 
@@ -71,6 +67,5 @@ def merge_chunks(data, start, end):
 	return people
 
 
-#data, start, end = generate_random()
-#merge_chunks(data,start,end)
-
+data, start, end = generate_random()
+merge_chunks(data,start,end)
