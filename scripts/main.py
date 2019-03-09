@@ -6,8 +6,12 @@ from clarks import Clark
 from em_algorithm import em_algorithm
 from em_algorithm2 import em_algorithm2
 from merge_chunks import merge_chunks
+from time import time
 
-#makes sure there is a command line argument
+
+start = time()
+
+#make sure there is a command line argument
 if len(sys.argv) != 2:
 	print("Please input filename as command line argment")
 
@@ -17,12 +21,20 @@ matrix = read_data(input_file) #reads data into numpy array (matrix)
 chunk_list, start_pos, end_pos = smart_chunking(matrix, max_snps=8)
 print("length of chunk list:", len(chunk_list))
 print("running EM without Clarks")
+for i in range(len(chunk_list)):
+	print(len(chunk_list[i]), start_pos[i], end_pos[i], end_pos[i]-start_pos[i])
+solved_chunks = []
 for ii, chunk in enumerate(chunk_list):
     temp_out = em_algorithm(chunk)
     print("ii:", ii)
-    #print("found temp_out")
-    #full_out = merge_chunks(temp_out, start_pos[ii], end_pos[ii])
-    #print("merged temp_out")
+    solved_chunks.append(np.asarray(temp_out))
+
+np.set_printoptions(threshold=np.nan)
+print(solved_chunks[3])
+solution = merge_chunks(solved_chunks, start_pos, end_pos)
+end = time()
+print(solution)
+print(end - start," seconds")
 '''
 print("running Clarks to completion")
 
