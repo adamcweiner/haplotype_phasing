@@ -9,8 +9,8 @@ def break_to_chunks(df, size_of_chunk):
 
     return chunk_list
 
-def smart_chunking(df, max_snps=-1):
-    """ Uses find_chunk_size to break the dataframe into chunks of various sizes. Default argument is to use find_ideal_chunk_size but if we set a positive integer for max_snps then it will use the corresponding argument for find_short_chunk_size. """
+def smart_chunking(df, max_snps=-1, end_shift=1):
+    """ Uses find_chunk_size to break the dataframe into chunks of various sizes. Default argument is to use find_ideal_chunk_size but if we set a positive integer for max_snps then it will use the corresponding argument for find_short_chunk_size. The end_shift argument represents the minimum distance at which the end_pos between consecutive chunks must increase. """
     n_snp, m_ind = df.shape
 
     end_pos = []
@@ -29,12 +29,13 @@ def smart_chunking(df, max_snps=-1):
         else:
             temp_end, temp_next_start = find_short_chunk_size(df, temp_start, max_snps=max_snps)
             count = 1
-            while temp_end == prev_end: # if two consecutive chunks have the same endpt
+            while temp_end < prev_end + end_shift: # force the end position of consecutive chunks to be `end_shift` positions apart
                 temp_end, temp_next_start = find_short_chunk_size(df, temp_start+count, max_snps=max_snps)
                 count += 1
         end_pos.append(temp_end) # position for end of current chunk
         start_pos.append(temp_next_start) # position for start of next chunk
         chunk_list.append(df[temp_start:temp_end])
+
     chunk_help(0) # do first pass outside of loop since end_pos is empty
     ii = 1 # index for moving through next_chunk_start_pos
     # iterate until the end_pos reaches the end of the genome
