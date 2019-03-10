@@ -31,9 +31,6 @@ def generate_random():
 
 def count_match(lst1, lst2):
 	length = len(lst1)
-	print(lst1,lst2)
-	#print(len(lst1))
-	#print(len(lst2))	
 	count = sum(1 for i in range(length) if lst1[i] == lst2[i])
 	return count
 
@@ -50,11 +47,7 @@ def merge_chunks(data, start, end):
 		people.append(person)
 
 	for i in range(1,len(data)):
-		print(i)
 		overlap = end[i-1] - start[i] +1
-		print(end[i-1])
-		print(start[i])
-		print(overlap)
 		for j in range(0,len(data[i-1][0]),2):
 			lst1 = [item[j] for item in data[i-1][len(data[i-1])-overlap:len(data[i-1])]] #ending overlapping sequence of first haplotype in a group
 			lst2 = [item[j] for item in data[i][0:overlap]] #beginning overlapping sequence of first haplotype
