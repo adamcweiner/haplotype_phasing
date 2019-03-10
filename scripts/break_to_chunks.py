@@ -20,10 +20,18 @@ def smart_chunking(df, max_snps=-1):
     def chunk_help(it):
         """ Finds chunk positions and appends appropriate values/chunks to lists """
         temp_start = start_pos[it]
+        if it > 0:
+            prev_end = end_pos[it-1]
+        else:
+            prev_end = 0
         if max_snps < 0:
             temp_end, temp_next_start = find_ideal_chunk_size(df, temp_start)
         else:
             temp_end, temp_next_start = find_short_chunk_size(df, temp_start, max_snps=max_snps)
+            count = 1
+            while temp_end == prev_end: # if two consecutive chunks have the same endpt
+                temp_end, temp_next_start = find_short_chunk_size(df, temp_start+count, max_snps=max_snps)
+                count += 1
         end_pos.append(temp_end) # position for end of current chunk
         start_pos.append(temp_next_start) # position for start of next chunk
         chunk_list.append(df[temp_start:temp_end])
@@ -93,14 +101,16 @@ def find_short_chunk_size(df, start_pos, max_snps, num_call=0):
     next_chunk_start_pos = np.min(last_het) + num_call # the next chunk needs to start at this position in order to guarantee at least one `1` in the overlap for all individuals. Shift up by num_call to account for recursive calls
     orig_start_pos = start_pos - num_call # want to compare the loop to the original start position instead of local one
     if hit_max:
+        next_chunk_start_pos = orig_start_pos + 3 # overwrite previous calculation and blindly shift up by 3... TODO: tune this number
+    # recursively call this function until there is separation between the original start_pos and the start position of the next chunk
+    if next_chunk_start_pos == orig_start_pos:
+        end_pos, next_chunk_start_pos = find_short_chunk_size(df, start_pos+1, max_snps, num_call=num_call+1)
+    '''if hit_max:
         temp_next_end_pos = end_pos
         # shift = int((end_pos - orig_start_pos) / 3)
         # keep shifting the start position up by 1 until you get a different end position
         if temp_next_end_pos == end_pos:
             # print("start_pos + shift:", start_pos+shift)
             temp_next_end_pos, temp_next_start_pos = find_short_chunk_size(df, start_pos+1, max_snps, num_call=num_call+1) # TODO: might need to increase num_call here... maybe consider doing both start and end checks within one recursion
-        next_chunk_start_pos = start_pos + 1 # the next start position will have a new end position from the previous chunk
-    # recursively call this function until there is separation between the original start_pos and the start position of the next chunk
-    if next_chunk_start_pos == orig_start_pos:
-        end_pos, next_chunk_start_pos = find_short_chunk_size(df, start_pos+1, max_snps, num_call=num_call+1)
+        next_chunk_start_pos = start_pos + 1 # the next start position will have a new end position from the previous chunk '''
     return int(end_pos), int(next_chunk_start_pos)
