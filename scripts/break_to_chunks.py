@@ -92,7 +92,7 @@ def find_short_chunk_size(df, start_pos, max_snps, num_call=0):
         shift = 1
         # keep shifting the start position up by 1 until you get a different end position
         while temp_next_end_pos == end_pos:
-            temp_next_end_pos, temp_next_start_pos = find_short_chunk_size(df, orig_start_pos+shift, max_snps)
+            temp_next_end_pos, temp_next_start_pos = find_short_chunk_size(df, orig_start_pos+shift, max_snps) # TODO: might need to increase num_call here... maybe consider doing both start and end checks within one recursion
             shift += 3
         next_chunk_start_pos = orig_start_pos + shift # the next start position will have a new end position from the previous chunk
     # recursively call this function until there is separation between the original start_pos and the start position of the next chunk
