@@ -31,6 +31,8 @@ def smart_chunking(df, max_snps=-1, end_shift=1):
             count = 1
             while temp_end < prev_end + end_shift: # force the end position of consecutive chunks to be `end_shift` positions apart
                 temp_end, temp_next_start = find_short_chunk_size(df, temp_start+count, max_snps=max_snps)
+                if temp_end >= n_snp:
+                    break
                 count += 1
         end_pos.append(temp_end) # position for end of current chunk
         start_pos.append(temp_next_start) # position for start of next chunk
