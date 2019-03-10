@@ -35,18 +35,11 @@ def smart_chunking(df, max_snps=-1):
         end_pos.append(temp_end) # position for end of current chunk
         start_pos.append(temp_next_start) # position for start of next chunk
         chunk_list.append(df[temp_start:temp_end])
-    print("starting to find first chunk")
     chunk_help(0) # do first pass outside of loop since end_pos is empty
     ii = 1 # index for moving through next_chunk_start_pos
-    print("done with first chunk")
-    print("start_pos[0]:", start_pos[0])
-    print("end_pos[0]:", end_pos[0])
     # iterate until the end_pos reaches the end of the genome
     while end_pos[ii-1] < n_snp:
         chunk_help(ii)
-        print(len(chunk_list))
-        print("start_pos[ii]:", start_pos[ii])
-        print("end_pos[ii]:", end_pos[ii])
         ii += 1
 
     start_pos.pop() # get rid of the last item on the list since it's never truly found
@@ -105,12 +98,4 @@ def find_short_chunk_size(df, start_pos, max_snps, num_call=0):
     # recursively call this function until there is separation between the original start_pos and the start position of the next chunk
     if next_chunk_start_pos == orig_start_pos:
         end_pos, next_chunk_start_pos = find_short_chunk_size(df, start_pos+1, max_snps, num_call=num_call+1)
-    '''if hit_max:
-        temp_next_end_pos = end_pos
-        # shift = int((end_pos - orig_start_pos) / 3)
-        # keep shifting the start position up by 1 until you get a different end position
-        if temp_next_end_pos == end_pos:
-            # print("start_pos + shift:", start_pos+shift)
-            temp_next_end_pos, temp_next_start_pos = find_short_chunk_size(df, start_pos+1, max_snps, num_call=num_call+1) # TODO: might need to increase num_call here... maybe consider doing both start and end checks within one recursion
-        next_chunk_start_pos = start_pos + 1 # the next start position will have a new end position from the previous chunk '''
     return int(end_pos), int(next_chunk_start_pos)
