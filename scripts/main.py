@@ -1,4 +1,5 @@
 import sys
+import os
 import numpy as np
 from read_data import read_data
 from break_to_chunks import smart_chunking
@@ -22,20 +23,27 @@ chunk_list, start_pos, end_pos = smart_chunking(matrix, max_snps=8)
 print("length of chunk list:", len(chunk_list))
 
 print("running EM without Clarks")
-for i in range(len(chunk_list)):
-	print(len(chunk_list[i]), start_pos[i], end_pos[i], end_pos[i]-start_pos[i])
 solved_chunks = []
 for ii, chunk in enumerate(chunk_list):
     temp_out = em_algorithm(chunk)
     print("ii:", ii)
     solved_chunks.append(np.asarray(temp_out))
 
-np.set_printoptions(threshold=np.nan)
-print(solved_chunks[3])
+
 solution = merge_chunks(solved_chunks, start_pos, end_pos)
 end = time()
-print(solution)
+#print(solution)
 print(end - start," seconds")
+
+filename = os.path.splitext(input_file)[0]+'.solutions.txt'
+output_file = open(filename,'w')
+for i in range(len(solution[0])):
+	for j in range(len(solution)):
+		output_file.write(str(solution[j][i]))
+		if(j!=len(solution)-1):
+			output_file.write(' ')
+	output_file.write('\n')
+
 '''
 print("running Clarks to completion")
 

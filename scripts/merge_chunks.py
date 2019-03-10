@@ -63,12 +63,12 @@ def merge_chunks(data, start, end):
 			lst1v3 = count_match(lst1,lst3)
 			
 			if(lst1v2 > lst1v3): #puts the first two together
-				people[j] += [item[j] for item in data[i][overlap:len(data[i])]]
-				people[j+1] += [item[j] for item in data[i][overlap:len(data[i])]]
+				people[j] += [item[j] for item in data[i][overlap-1:len(data[i])]]
+				people[j+1] += [item[j] for item in data[i][overlap-1:len(data[i])]]
 			else: #puts the first haplotype with second
 			#note that if they are matching it will default to this but shouldn't matter either way because it would be 50/50
-				people[j+1] += [item[j] for item in data[i][overlap:len(data[i])]]
-				people[j] += [item[j] for item in data[i][overlap:len(data[i])]]
+				people[j+1] += [item[j] for item in data[i][overlap-1:len(data[i])]]
+				people[j] += [item[j] for item in data[i][overlap-1:len(data[i])]]
 				
 	return people
 
