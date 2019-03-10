@@ -88,7 +88,13 @@ def find_short_chunk_size(df, start_pos, max_snps, num_call=0):
     next_chunk_start_pos = np.min(last_het) + num_call # the next chunk needs to start at this position in order to guarantee at least one `1` in the overlap for all individuals. Shift up by num_call to account for recursive calls
     orig_start_pos = start_pos - num_call # want to compare the loop to the original start position instead of local one
     if hit_max:
-        next_chunk_start_pos = orig_start_pos + 3 # overwrite previous calculation and blindly shift up by 3... TODO: tune this number
+        temp_next_end_pos = end_pos
+        shift = 1
+        # keep shifting the start position up by 1 until you get a different end position
+        while temp_next_end_pos == end_pos:
+            temp_next_end_pos, temp_next_start_pos = find_short_chunk_size(df, orig_start_pos+shift, max_snps)
+            shift += 3
+        next_chunk_start_pos = orig_start_pos + shift # the next start position will have a new end position from the previous chunk
     # recursively call this function until there is separation between the original start_pos and the start position of the next chunk
     if next_chunk_start_pos == orig_start_pos:
         end_pos, next_chunk_start_pos = find_short_chunk_size(df, start_pos+1, max_snps, num_call=num_call+1)

@@ -20,6 +20,10 @@ input_file = sys.argv[1]
 matrix = read_data(input_file) #reads data into numpy array (matrix)
 chunk_list, start_pos, end_pos = smart_chunking(matrix, max_snps=8)
 print("length of chunk list:", len(chunk_list))
+for ii in range(8):
+    print("ii =", ii)
+    print("start_pos", start_pos[ii])
+    print("end_pos", end_pos[ii])
 print("running EM without Clarks")
 for i in range(len(chunk_list)):
 	print(len(chunk_list[i]), start_pos[i], end_pos[i], end_pos[i]-start_pos[i])
