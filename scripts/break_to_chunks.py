@@ -20,17 +20,23 @@ def smart_chunking(df, max_snps=-1):
     def chunk_help(it):
         """ Finds chunk positions and appends appropriate values/chunks to lists """
         temp_start = start_pos[it]
+        if it > 0:
+            prev_end = end_pos[it-1]
+        else:
+            prev_end = 0
         if max_snps < 0:
             temp_end, temp_next_start = find_ideal_chunk_size(df, temp_start)
         else:
             temp_end, temp_next_start = find_short_chunk_size(df, temp_start, max_snps=max_snps)
+            count = 1
+            while temp_end == prev_end: # if two consecutive chunks have the same endpt
+                temp_end, temp_next_start = find_short_chunk_size(df, temp_start+count, max_snps=max_snps)
+                count += 1
         end_pos.append(temp_end) # position for end of current chunk
         start_pos.append(temp_next_start) # position for start of next chunk
         chunk_list.append(df[temp_start:temp_end])
-
     chunk_help(0) # do first pass outside of loop since end_pos is empty
     ii = 1 # index for moving through next_chunk_start_pos
-
     # iterate until the end_pos reaches the end of the genome
     while end_pos[ii-1] < n_snp:
         chunk_help(ii)
