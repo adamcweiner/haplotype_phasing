@@ -6,7 +6,7 @@ from break_to_chunks import smart_chunking
 from clarks import Clark
 from em_algorithm import em_algorithm
 from em_algorithm2 import em_algorithm2
-from em_algorithm3 import em_algorithm3
+from em_algorithm3 import em_algorithm3, one2two
 from merge_chunks import merge_chunks
 from time import time
 
@@ -26,9 +26,10 @@ print("length of chunk list:", len(chunk_list))
 print("running EM without Clarks")
 solved_chunks = []
 for ii, chunk in enumerate(chunk_list):
-    #temp_out = em_algorithm(chunk)
-    temp_out = em_algorithm3(chunk)
-    print("ii:", ii)
+    temp_chunk = one2two(chunk)
+    temp_out = em_algorithm3(temp_chunk)
+    print("progress:", ii / len(chunk_list))
+    print("temp_chunk.shape:", temp_chunk.shape)
     solved_chunks.append(np.asarray(temp_out))
 
 
