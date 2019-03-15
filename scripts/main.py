@@ -20,20 +20,32 @@ if len(sys.argv) != 2:
 input_file = sys.argv[1]
 
 matrix = read_data(input_file) #reads data into numpy array (matrix)
-chunk_list, start_pos, end_pos = smart_chunking(matrix, max_snps=8, end_shift=5)
+chunk_list, start_pos, end_pos = smart_chunking(matrix, max_snps=12, end_shift=5)
 print("length of chunk list:", len(chunk_list))
 
 print("running EM without Clarks")
 solved_chunks = []
 for ii, chunk in enumerate(chunk_list):
-    temp_chunk = one2two(chunk)
+    if ii<=0:
+        temp_chunk = one2two(chunk)
+    else:
+        a1 = start_pos[ii] - start_pos[ii-1]
+        a2 = end_pos[ii-1] - start_pos[ii]
+        a3 = end_pos[ii] - end_pos[ii-1]
+        top_piece = temp_out[a1:,:]
+        bottom_piece = one2two(chunk[a2:,:])
+        temp_chunk = np.vstack((top_piece,bottom_piece))
+    #print(temp_chunk.shape)
     temp_out = em_algorithm3(temp_chunk)
     print("progress:", ii / len(chunk_list))
     print("temp_chunk.shape:", temp_chunk.shape)
-    solved_chunks.append(np.asarray(temp_out))
+    if ii<=0:
+        solved_chunks.append(np.asarray(temp_out))
+    else:
+        solved_chunks.append(np.asarray(temp_out[a2:,:]))
 
+solution = np.vstack(solved_chunks).T
 
-solution = merge_chunks(solved_chunks, start_pos, end_pos)
 end = time()
 #print(solution)
 print(end - start," seconds")
