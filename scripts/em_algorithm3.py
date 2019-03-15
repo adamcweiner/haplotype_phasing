@@ -74,8 +74,10 @@ def em_algorithm3(data):
 		else:
 			# find compatible, make sure their complements are also in the pool
 			fill1 = np.array([pool[i][unphased_spot] for i in range(len(pool)) if compat_chrom1[i]])
+			fill1 = fill1.reshape(-1,unph_sum)
 			fill1c = [1]*unph_sum - fill1
 			fill2 = np.array([pool[i][unphased_spot] for i in range(len(pool)) if compat_chrom2[i]])
+			fill2 = fill2.reshape(-1,unph_sum)
 			fill2c = [1]*unph_sum - fill2
 			compat_pool = np.block([[fill1,fill1c],[fill2c,fill2]])
 			compat_pool = np.unique(compat_pool, axis=0)
